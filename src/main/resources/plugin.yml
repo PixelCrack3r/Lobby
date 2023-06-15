@@ -1,0 +1,14 @@
+name: Lobby
+version: 1.0.0
+main: me.pixelgames.pixelcrack3r.lobby.main.Main
+commands:
+  lobby:
+  spawn:
+  build:
+  v:
+  vanish:
+  setpos:
+  fly:
+  additem:
+  edititem:
+  
