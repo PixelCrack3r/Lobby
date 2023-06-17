@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -14,8 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-import de.dytanic.cloudnet.driver.CloudNetDriver;
-import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import me.pixelgames.pixelcrack3r.lobby.utils.Config;
 import me.pixelgames.pixelcrack3r.lobby.utils.ItemGenerator;
 
@@ -192,30 +189,7 @@ public class ItemManager {
 		if(enchantment == null) {
 			return null;
 		}
-		
-		if(enchantment.split("[?]").length == 1 && enchantment.split(":").length == 1 && enchantment.split("[?]")[0].split("==").length == 1) {
-			if(Config.getConfig().getBoolean("settings.plugin.dependencies.cloudnet3")) {
-				ServiceInfoSnapshot serviceInfo = CloudNetDriver.getInstance().getCloudServiceProvider(Bukkit.getName()).getServiceInfoSnapshot();
-				if(enchantment.split("[?]")[0].split("==")[0].equalsIgnoreCase("server-id")) {
-					if(enchantment.split("[?]")[0].split("==")[1].equalsIgnoreCase(serviceInfo.getServiceId().getUniqueId().toString())) {
-						enchantment = enchantment.split("[?]")[1].split(":")[0];
-					} else {
-						enchantment = enchantment.split("[?]")[1].split(":")[1];
-					}
-				} else if(enchantment.split("[?]")[0].split("==")[0].equalsIgnoreCase("server-name")) {
-					if(enchantment.split("[?]")[0].split("==")[1].equalsIgnoreCase(serviceInfo.getName())) {
-						enchantment = enchantment.split("[?]")[1].split(":")[0];
-					} else {
-						enchantment = enchantment.split("[?]")[1].split(":")[1];
-					}
-				}
-			}
-		}
-		
-		if(enchantment == null) {
-			return null;
-		}
-		
+
 		return Enchantment.getByName(enchantment);
 	}
 	

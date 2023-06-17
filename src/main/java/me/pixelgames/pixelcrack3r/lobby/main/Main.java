@@ -55,9 +55,7 @@ public class Main extends JavaPlugin {
 	private static PluginDescriptionFile description;
 	
 	private static Main plugin;
-	
-	private static Timer timer;
-	
+
 	@Override
 	public void onEnable() {
 		Bukkit.getConsoleSender().sendMessage(getPrefix() + "§aEnabling §9" + super.getDescription().getName() + " §av-" + super.getDescription().getVersion() + " §7by PixelCrack3r");
@@ -66,8 +64,8 @@ public class Main extends JavaPlugin {
 		registerListeners();
 		registerCommands();
 		Bukkit.getConsoleSender().sendMessage(getPrefix() + "§aEnabling Successful");
-		
-		timer = new Timer(Bukkit.getWorld(Config.getConfig().getString("settings.world.name")));
+
+		Timer timer = new Timer(Bukkit.getWorld(Config.getConfig().getString("settings.world.name")));
 		timer.start();
 	}
 	
@@ -249,7 +247,7 @@ public class Main extends JavaPlugin {
 		
 		Config.getConfig().addDefault("settings.plugin.dependencies.pex", false);
 		Config.getConfig().addDefault("settings.plugin.dependencies.essentials", false);
-		Config.getConfig().addDefault("settings.plugin.dependencies.cloudnet3", false);
+		Config.getConfig().addDefault("settings.plugin.dependencies.cloudnet4", false);
 		
 		Config.getConfig().addDefault("settings.lobby.group.default", "Lobby");
 		Config.getConfig().addDefault("settings.lobby.group.premium", "Premiumlobby");

@@ -63,21 +63,20 @@ public class onPlayerJoinListener implements Listener {
 			}
 			rs = config.get("lobby.silent.hidden");
 			if(rs != null) {
-				String displayName = rs;
-				
-				if(displayName.equalsIgnoreCase("§aEveryone")) {
+
+				if(rs.equalsIgnoreCase("§aEveryone")) {
 					playerManager.setHidden(HiddenType.EVERY, true, true);
-				} else if(displayName.equalsIgnoreCase("§6Only Choosen")) {
+				} else if(rs.equalsIgnoreCase("§6Only Choosen")) {
 					playerManager.setHidden(HiddenType.CHOOSE, true, true);
-				} else if(displayName.equalsIgnoreCase("§cNobody")) {
+				} else if(rs.equalsIgnoreCase("§cNobody")) {
 					playerManager.setHidden(HiddenType.NOBODY, true, true);
-				} else if(displayName.equalsIgnoreCase("§cReset")) {
+				} else if(rs.equalsIgnoreCase("§cReset")) {
 					playerManager.setHidden(HiddenType.NOBODY, true, true);
-				} else if(displayName.equalsIgnoreCase("§7Player")) {
+				} else if(rs.equalsIgnoreCase("§7Player")) {
 					playerManager.setHidden(HiddenType.PLAYER, !playerManager.hasHidden(HiddenType.PLAYER), false);
-				} else if(displayName.equalsIgnoreCase("§5VIPs")) {
+				} else if(rs.equalsIgnoreCase("§5VIPs")) {
 					playerManager.setHidden(HiddenType.PREMIUM, !playerManager.hasHidden(HiddenType.PREMIUM), false);
-				} else if(displayName.equalsIgnoreCase("§9Team")) {
+				} else if(rs.equalsIgnoreCase("§9Team")) {
 					playerManager.setHidden(HiddenType.TEAM, !playerManager.hasHidden(HiddenType.TEAM), false);
 				}
 			}

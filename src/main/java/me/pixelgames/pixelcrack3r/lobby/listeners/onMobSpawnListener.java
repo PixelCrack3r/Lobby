@@ -8,8 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class onMobSpawnListener implements Listener {
-	
-	@SuppressWarnings("deprecation")
+
 	@EventHandler
 	public void onMobSpawn(CreatureSpawnEvent e) {
 		if(!Config.getConfig().getBoolean("settings.world.mob-spawning")) {
@@ -17,7 +16,7 @@ public class onMobSpawnListener implements Listener {
 		} else if(!Config.getConfig().getBoolean("settings.world.monster-spawning")) {
 			List<String> blacklist = Config.getCreatureBlackList();
 			
-			if(blacklist.contains(e.getEntityType().name()) || blacklist.contains(e.getEntityType().getTypeId() + "")) {
+			if(blacklist.contains(e.getEntityType().name()) || blacklist.contains(String.valueOf(e.getEntityType().getTypeId()))) {
 				e.setCancelled(true);
 			}
 		}

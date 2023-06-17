@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 
 import com.earth2me.essentials.api.Economy;
 
-import de.dytanic.cloudnet.driver.CloudNetDriver;
 import me.pixelgames.pixelcrack3r.lobby.enums.DayTime;
 import me.pixelgames.pixelcrack3r.lobby.enums.Group;
 import me.pixelgames.pixelcrack3r.lobby.enums.HiddenType;
@@ -96,7 +95,7 @@ public class Timer implements Runnable {
 								BigDecimal money = Economy.getMoneyExact(player.getPlayer().getUniqueId());
 								prefix = prefix.replaceAll("%coins%", money.toString());
 							} catch (Exception e) {
-								prefix = prefix.replaceAll("%coins%", null);
+								prefix = prefix.replaceAll("%coins%", "");
 							}
 						}
 						
@@ -106,16 +105,6 @@ public class Timer implements Runnable {
 								String name = hash.split(": ")[1];
 								
 								if(PermissionsEx.getUser(player.getPlayer()).inGroup(group)) {
-									prefix = prefix.replaceAll("%rank%", ChatColor.translateAlternateColorCodes('&', name));
-									break;
-								}
-							}
-						} else if(Config.getConfig().getBoolean("settings.plugin.dependencies.cloudnet3")) {
-							for(String hash : Config.getPerm().getStringList("scoreboard.groups")) {
-								String group = hash.split(": ")[0];
-								String name = hash.split(": ")[1];
-								
-								if(CloudNetDriver.getInstance().getPermissionManagement().getUser(player.getPlayer().getUniqueId()).inGroup(group)) {
 									prefix = prefix.replaceAll("%rank%", ChatColor.translateAlternateColorCodes('&', name));
 									break;
 								}

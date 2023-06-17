@@ -6,6 +6,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import eu.cloudnetservice.driver.inject.InjectionLayer;
+import eu.cloudnetservice.driver.provider.CloudServiceProvider;
+import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
+import eu.cloudnetservice.modules.bridge.BridgeServiceProperties;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,9 +18,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import de.dytanic.cloudnet.driver.CloudNetDriver;
-import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
-import de.dytanic.cloudnet.ext.bridge.BridgeServiceProperty;
 import me.pixelgames.pixelcrack3r.lobby.gui.Gui;
 import me.pixelgames.pixelcrack3r.lobby.gui.GuiScreen;
 import me.pixelgames.pixelcrack3r.lobby.utils.Config;
@@ -61,13 +62,17 @@ public class InventoryManager {
 	}
 	
 	public int getSize() {
+
 		if(this.isLobbySwitcher() && this.canAutoModified()) {
 			int slots = 0;
-			if(Config.getConfig().getBoolean("settings.plugin.dependencies.cloudnet3")) {
-				int count = CloudNetDriver.getInstance().getCloudServiceProvider().getServicesCountByTask(Config.getConfig().getString("settings.lobby.group.premium"));
+			if(Config.getConfig().getBoolean("settings.plugin.dependencies.cloudnet4")) {
+				CloudServiceProvider cloudServiceProvider = InjectionLayer.ext().instance(CloudServiceProvider.class);
+
+				int count = cloudServiceProvider.serviceCountByTask(Config.getConfig().getString("settings.lobby.group.premium"));
+				
 				while(count >= slots) slots += 9;
 				
-				count = CloudNetDriver.getInstance().getCloudServiceProvider().getServicesCountByTask(Config.getConfig().getString("settings.lobby.group.default"));
+				count = cloudServiceProvider.serviceCountByTask(Config.getConfig().getString("settings.lobby.group.default"));
 				while(count >= slots) slots += 9;
 			}
 			return slots <= 0 ? 9 : slots;
@@ -98,42 +103,44 @@ public class InventoryManager {
 	
 	public HashMap<Integer, ItemStack> getItems() {
 		HashMap<Integer, ItemStack> items = new HashMap<Integer, ItemStack>();
-		
+
 		if(this.isLobbySwitcher() && this.canAutoModified()) {
-			if(Config.getConfig().getBoolean("settings.plugin.dependencies.cloudnet3")) {
-				Collection<ServiceInfoSnapshot> premiumLobbies = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServicesByGroup(Config.getConfig().getString("settings.lobby.group.premium"));
-				if(premiumLobbies != null) {
+			if(Config.getConfig().getBoolean("settings.plugin.dependencies.cloudnet4")) {
+				CloudServiceProvider cloudServiceProvider = InjectionLayer.ext().instance(CloudServiceProvider.class);
+
+				Collection<ServiceInfoSnapshot> premiumLobbies = cloudServiceProvider.servicesByGroup(Config.getConfig().getString("settings.lobby.group.premium"));
+				if(premiumLobbies.size() != 0) {
 					int slot = 0;
 					for(ServiceInfoSnapshot serviceInfo : premiumLobbies) {
 						ItemStack itm = new ItemStack(Material.STAINED_GLASS, 1, (byte) 1);
 						ItemMeta meta = itm.getItemMeta();
-						meta.setDisplayName("§6" + serviceInfo.getName());
-						meta.setLore(Arrays.asList("§7» §a" + serviceInfo.getProperty(BridgeServiceProperty.ONLINE_COUNT).orElse(0) + " §7Spieler"));
+						meta.setDisplayName("§6" + serviceInfo.name());
+						meta.setLore(Arrays.asList("§7» §a" + serviceInfo.readPropertyOrDefault(BridgeServiceProperties.ONLINE_COUNT, 0) + " §7Spieler"));
 						itm.setItemMeta(meta);
 						
-						if(serviceInfo.getServiceId().getUniqueId().toString().equalsIgnoreCase(CloudNetDriver.getInstance().getCloudServiceProvider(Bukkit.getServerName()).getServiceInfoSnapshot().getServiceId().getUniqueId().toString())) itm = ItemGenerator.modify().setItemStack(itm).addEnchantment(Enchantment.KNOCKBACK, 0, false).build();
+						if(serviceInfo.name().equalsIgnoreCase(Bukkit.getServerName())) itm = ItemGenerator.modify().setItemStack(itm).addEnchantment(Enchantment.KNOCKBACK, 0, false).build();
 						items.put(slot, itm);
 						ItemManager manager = ItemManager.getCustom(itm.getItemMeta().getDisplayName());
-						manager.setCustomServer(serviceInfo.getName());
+						manager.setCustomServer(serviceInfo.name());
 						this.customItems.add(itm.getItemMeta().getDisplayName());
 						slot++;
 					}
 				}
 				
-				Collection<ServiceInfoSnapshot> lobbies = CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServicesByGroup(Config.getConfig().getString("settings.lobby.group.default"));
-				if(lobbies != null) {
+				Collection<ServiceInfoSnapshot> lobbies = cloudServiceProvider.servicesByGroup(Config.getConfig().getString("settings.lobby.group.default"));
+				if(lobbies.size() != 0) {
 					int slot = 0;
 					for(ServiceInfoSnapshot serviceInfo : lobbies) {
 						ItemStack itm = new ItemStack(Material.STAINED_GLASS, 1, (byte) 1);
 						ItemMeta meta = itm.getItemMeta();
-						meta.setDisplayName("§6" + serviceInfo.getName());
-						meta.setLore(Arrays.asList("§7» §a" + serviceInfo.getProperty(BridgeServiceProperty.ONLINE_COUNT).orElse(0) + " §7Spieler"));
+						meta.setDisplayName("§6" + serviceInfo.name());
+						meta.setLore(Arrays.asList("§7» §a" + serviceInfo.readPropertyOrDefault(BridgeServiceProperties.ONLINE_COUNT, 0) + " §7Spieler"));
 						itm.setItemMeta(meta);
 						
-						if(serviceInfo.getServiceId().getUniqueId().toString().equalsIgnoreCase(CloudNetDriver.getInstance().getCloudServiceProvider(Bukkit.getServerName()).getServiceInfoSnapshot().getServiceId().getUniqueId().toString())) itm = ItemGenerator.modify().setItemStack(itm).addEnchantment(Enchantment.KNOCKBACK, 0, false).build();
+						if(serviceInfo.name().equalsIgnoreCase(Bukkit.getServerName())) itm = ItemGenerator.modify().setItemStack(itm).addEnchantment(Enchantment.KNOCKBACK, 0, false).build();
 						items.put(slot, itm);
 						ItemManager manager = ItemManager.getCustom(itm.getItemMeta().getDisplayName());
-						manager.setCustomServer(serviceInfo.getName());
+						manager.setCustomServer(serviceInfo.name());
 						this.customItems.add(itm.getItemMeta().getDisplayName());
 						slot++;
 					}
